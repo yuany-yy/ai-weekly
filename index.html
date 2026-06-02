@@ -3,253 +3,388 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📡 AI 速递 | 第 0 期</title>
+<title>📡 AI 速递 | 第 1 期</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
-    background: #f5f6f8;
+    background: #f0f2f5;
     color: #1a1a1a;
     font-size: 15px;
     line-height: 1.7;
   }
 
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4f8ef7, #a78bfa);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s;
+  }
+
   .header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     color: white;
-    padding: 32px 20px 24px;
+    padding: 40px 20px 30px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(79,142,247,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%);
+    border-radius: 50%;
   }
   .header .badge {
     display: inline-block;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 20px;
     padding: 4px 14px;
     font-size: 12px;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(4px);
   }
   .header h1 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
   }
   .header .period {
     font-size: 13px;
-    opacity: 0.65;
+    opacity: 0.55;
+    margin-bottom: 14px;
+  }
+  .sources-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .sources-label {
+    font-size: 11px;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  .source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.2px;
   }
 
   .container {
-    max-width: 680px;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 16px 16px 40px;
+    padding: 20px 16px 48px;
   }
 
-  /* 分区标题 */
   .section-title {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    color: #888;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #999;
     text-transform: uppercase;
-    margin: 24px 0 10px;
+    margin: 28px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e8e8;
   }
 
-  /* 文章卡片 */
   .card {
     background: white;
-    border-radius: 12px;
-    padding: 18px 18px 14px;
+    border-radius: 14px;
     margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    overflow: hidden;
   }
-  .card.featured {
-    border-left: 3px solid #0f3460;
+  .card.featured { border-left: 3px solid #4f8ef7; }
+
+  .card-inner { padding: 18px 18px 16px; }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
   }
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
+  .source-tag.x { background: #f0f0f0; color: #1a1a1a; }
+  .source-tag.podcast { background: #fdf4ff; color: #9333ea; }
+
   .card h3 {
     font-size: 15px;
     font-weight: 600;
-    margin-bottom: 8px;
     line-height: 1.5;
+    color: #1a1a1a;
+    margin-bottom: 8px;
   }
   .card p {
     font-size: 14px;
     color: #444;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    line-height: 1.75;
   }
   .card .insight {
-    background: #f0f4ff;
-    border-radius: 8px;
-    padding: 10px 12px;
+    background: linear-gradient(135deg, #eef3ff, #f3eeff);
+    border-radius: 10px;
+    padding: 10px 14px;
     font-size: 13px;
-    color: #2c4a8a;
+    color: #3a5cb8;
     margin: 10px 0;
+    border-left: 2px solid #4f8ef7;
   }
   .card .insight::before { content: "💡 "; }
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
   .card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 13px;
-    color: #0f3460;
+    color: #4f8ef7;
     text-decoration: none;
     font-weight: 500;
+    padding: 5px 12px;
+    background: #f0f6ff;
+    border-radius: 20px;
+    transition: background 0.15s;
+    white-space: nowrap;
   }
-  .card a:hover { text-decoration: underline; }
+  .card a:hover { background: #dceeff; }
+  .card a::before { content: "🔗 "; font-size: 11px; }
+  .link-url {
+    font-size: 12px;
+    color: #aaa;
+    word-break: break-all;
+    font-family: "SF Mono", "Menlo", monospace;
+  }
 
-  /* 问卷区 */
+  .notice {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #92400e;
+    margin-bottom: 16px;
+  }
+
   .survey {
     background: white;
     border-radius: 16px;
-    padding: 24px 20px;
-    margin-top: 28px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 26px 22px;
+    margin-top: 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
   }
-  .survey h2 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .survey .sub {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 20px;
-  }
+  .survey h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .survey .sub { font-size: 13px; color: #999; margin-bottom: 22px; }
+  .divider { height: 1px; background: #f0f0f0; margin: 0 0 20px; }
 
-  .question {
-    margin-bottom: 22px;
-  }
+  .question { margin-bottom: 24px; }
   .question label.q-title {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #1a1a1a;
+    display: block; font-size: 14px; font-weight: 600;
+    margin-bottom: 10px; color: #1a1a1a;
   }
-
-  .options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .options { display: flex; flex-wrap: wrap; gap: 8px; }
   .option-btn {
-    padding: 8px 16px;
-    border: 1.5px solid #e0e0e0;
+    padding: 8px 18px;
+    border: 1.5px solid #e8e8e8;
     border-radius: 20px;
     font-size: 13px;
     background: white;
     cursor: pointer;
     transition: all 0.15s;
-    color: #333;
+    color: #555;
   }
-  .option-btn:hover { border-color: #0f3460; color: #0f3460; }
+  .option-btn:hover { border-color: #4f8ef7; color: #4f8ef7; background: #f0f6ff; }
   .option-btn.selected {
-    background: #0f3460;
-    border-color: #0f3460;
+    background: #4f8ef7;
+    border-color: #4f8ef7;
     color: white;
+    box-shadow: 0 2px 8px rgba(79,142,247,0.3);
   }
 
-  /* 满意度星星 */
-  .stars { display: flex; gap: 6px; }
+  .stars { display: flex; gap: 8px; }
   .star {
-    font-size: 28px;
-    cursor: pointer;
-    opacity: 0.25;
-    transition: opacity 0.15s;
+    font-size: 30px; cursor: pointer;
+    opacity: 0.2; transition: opacity 0.15s, transform 0.1s;
   }
+  .star:hover { transform: scale(1.15); }
   .star.active { opacity: 1; }
 
-  /* 提交按钮 */
   .submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #1a1a2e, #0f3460);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 8px;
-    letter-spacing: 0.5px;
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #4f8ef7, #7c6ef7);
+    color: white; border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    margin-top: 8px; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(79,142,247,0.35);
+    transition: opacity 0.15s, transform 0.1s;
   }
-  .submit-btn:active { opacity: 0.85; }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(79,142,247,0.4); }
+  .submit-btn:active { transform: translateY(0); opacity: 0.9; }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
-  /* 感谢页 */
-  .thanks {
-    display: none;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  .thanks .emoji { font-size: 48px; margin-bottom: 16px; }
+  .thanks { display: none; text-align: center; padding: 40px 20px; }
+  .thanks .emoji { font-size: 52px; margin-bottom: 16px; }
   .thanks h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .thanks p { color: #666; font-size: 14px; }
-
-  .divider {
-    height: 1px;
-    background: #f0f0f0;
-    margin: 6px 0 14px;
-  }
+  .thanks p { color: #666; font-size: 14px; line-height: 1.8; }
 </style>
 </head>
 <body>
 
+<div id="progress-bar"></div>
+
 <div class="header">
   <div class="badge">📡 AI 速递</div>
-  <h1>第 0 期</h1>
-  <div class="period">2026.05.26 — 06.01 · 数据科学部门出品</div>
+  <h1>第 1 期 · 2026.05.26 — 06.02</h1>
+  <div class="sources-bar">
+    <span class="sources-label">本期来源</span>
+    <span class="source-chip">𝕏 @trq212</span>
+    <span class="source-chip">𝕏 @petergyang</span>
+    <span class="source-chip">𝕏 @thsottiaux</span>
+    <span class="source-chip">𝕏 @swyx</span>
+    <span class="source-chip">🎙 Unsupervised Learning</span>
+  </div>
 </div>
 
-<div class="container" id="main-content">
+<div class="container">
 
-  <!-- 本周最值得关注 -->
+  <div class="notice">⚠️ 本期网络限制，官方博客、KOL 博客、中文媒体均未能采集，内容来自 Builder X 动态与播客。</div>
+
   <div class="section-title">🔥 本周最值得关注</div>
 
   <div class="card featured">
-    <h3>AI 帮你写代码，但你要学会「逼」它找 bug</h3>
-    <p>OpenClaw 创始人 Peter Steinberger 的反直觉经验：让 Codex 自查有没有 bug，它说「没问题」；但告诉它「一定有 bug」，它就会反复循环直到真找到。他现在用 AI 跑的任务已从 30 分钟延伸到 4-10 小时——「掌控 agent 是一门技艺。」</p>
-    <div class="insight">review 数据脚本或 SQL 时，与其问「有没有问题」，不如问「这里有个 bug，找出来」</div>
-    <a href="https://x.com/steipete/status/2060672154727825718" target="_blank">查看原推 →</a>
+    <div class="card-inner">
+      <div class="card-meta">
+        <span class="source-tag x">𝕏 @trq212</span>
+        <span class="source-tag">Claude Code @Anthropic</span>
+      </div>
+      <h3>Anthropic 内部人员怎么用 Claude：一个让 AI 持续汇报进度的 prompt</h3>
+      <p>Thariq（Claude Code 团队）分享了同事 Suzanne 的做法：用一个专门的 prompt 让 Claude 每完成一步就汇报状态，而不是默默跑完再告诉你结果。这条推文获得 6000+ likes、350+ 转发，是本周 AI 工程师社区互动最高的内容。对每天用 Claude 跑复杂任务的人，这是一个立刻可用的工作流改进。Suzanne 还提到配合语音模式使用，反馈更自然。</p>
+      <div class="insight">在长任务开始前加一句「每完成一个步骤，先汇报进度再继续」，成本极低，但对掌控感的提升非常明显</div>
+      <div class="link-row">
+        <a href="https://x.com/trq212/status/2061545633560010826" target="_blank">查看原推 →</a>
+        <a href="https://x.com/trq212/status/2061545635141361687" target="_blank">完整 prompt →</a>
+      </div>
+    </div>
   </div>
 
-  <!-- 工具动态 -->
-  <div class="section-title">🛠 工具动态</div>
+  <div class="section-title">💬 Builder 们说了什么</div>
 
   <div class="card">
-    <h3>Cursor 新功能：执行命令前告诉你风险是什么</h3>
-    <p>auto-review 功能——每次执行命令前，先解释操作用途和潜在风险，边用边学。</p>
-    <div class="insight">写数据处理脚本时跑一下，比事后排查省心</div>
-    <a href="https://x.com/ryolu_/status/2060766674203353190" target="_blank">查看原推 →</a>
+    <div class="card-inner">
+      <div class="card-meta">
+        <span class="source-tag x">𝕏 @petergyang</span>
+        <span class="source-tag">Product @Roblox</span>
+      </div>
+      <h3>独立开发者用 AI agents 一人维护多个产品的 6 条生存法则</h3>
+      <p>Peter Yang 整理了有 25 年经验的独立开发者 Josh Shpigford 的方法论：从 day 1 就收费并砍掉无法自负盈亏的产品、用 git worktrees 并行开发多个功能互不干扰、用 GPT 审 Claude 的代码（GPT 每次能多找出 3-5 个 bug）、构建 /learnings skill 让 agent 从错误中积累规则。这套方法专为「一个人 + 多个 AI agents」的工作模式设计。</p>
+      <div class="insight">/learnings skill 的思路：每个开发阶段结束后让 AI 自己总结「哪些做法不要重复」，相当于给 agent 建了一个可积累的错误手册，越用越聪明</div>
+      <div class="link-row">
+        <a href="https://x.com/petergyang/status/2061452068792287622" target="_blank">查看原推 →</a>
+      </div>
+    </div>
   </div>
 
+  <div class="section-title">🛠 新功能 &amp; 技术动态</div>
+
   <div class="card">
-    <h3>Codex 用户破 500 万，GPT 版本号有规律</h3>
-    <p>版本号每次递增（5.0 → 5.1 → … → 5.5）= 能力提升 + token 效率优化 + 速度更快。GPT-5.5 是目前最强版本。</p>
-    <a href="https://x.com/thsottiaux/status/2060627747760984429" target="_blank">查看原推 →</a>
+    <div class="card-inner">
+      <div class="card-meta">
+        <span class="source-tag x">𝕏 @thsottiaux</span>
+        <span class="source-tag">Codex &amp; ChatGPT @OpenAI</span>
+      </div>
+      <h3>GPT-5.5 悄悄上线 AWS，没有官方公告</h3>
+      <p>OpenAI Codex 团队成员 Thibault Sottiaux 发推确认 GPT-5.5 已登陆 AWS，同期他还问粉丝「要不要把 Codex 改名叫 ChadGPT」，后者获得 2984 likes。两条消息都在没有 OpenAI 官方公告的情况下传开，GPT-5.5 的 AWS 部署属于悄然推进。企业用户可通过 Amazon Bedrock 接入使用。</p>
+      <div class="link-row">
+        <a href="https://x.com/thsottiaux/status/2061644307111796984" target="_blank">GPT-5.5 上 AWS →</a>
+        <a href="https://x.com/thsottiaux/status/2061572602888589807" target="_blank">ChadGPT 梗 →</a>
+      </div>
+    </div>
   </div>
 
+  <div class="section-title">🎧 深度：值得花时间看</div>
+
   <div class="card">
-    <h3>Claude Managed Agents：agent 可以自我改进了</h3>
-    <p>Anthropic 新增「Dreaming」功能——agent 定期回顾历史 session，提取规律，自动优化记忆。Harvey 接入后任务完成率提升约 6 倍。另新增多 agent 并行编排。</p>
-    <a href="https://claude.com/blog/new-in-claude-managed-agents" target="_blank">查看原文 →</a>
+    <div class="card-inner">
+      <div class="card-meta">
+        <span class="source-tag podcast">Unsupervised Learning Ep 88</span>
+        <span class="source-tag">Sebastian Mallaby · 传记作者</span>
+      </div>
+      <h3>花 30 小时陪 Demis Hassabis 喝咖啡的人，讲了哪些内部故事</h3>
+      <p>《The Infinity Machine》作者 Sebastian Mallaby 接受播客访谈，披露多个 DeepMind 内幕：Reid Hoffman 曾愿出 10 亿美元帮 DeepMind 从 Google 独立（计划代号 Mario）；David Silver（强化学习核心人物）离职是因为 DeepMind 始终不肯在 RL 上 all-in；Demis 对 Sam Altman 的真实看法是「没拿到学位，不是严肃的科学家」。Mallaby 还预测 OpenAI 仍有 50% 概率在明年夏天前被迫折价卖给大厂。</p>
+      <div class="insight">Anthropic 极低离职率背后的逻辑：Dario 对安全的极度一致性让「觉得他有点疯」的人不会加入，但加入的人极度忠诚——组建 AI 团队时，价值观筛选比能力筛选更重要</div>
+      <div class="link-row">
+        <a href="https://www.youtube.com/@RedpointAI" target="_blank">收听播客 →</a>
+      </div>
+    </div>
   </div>
 
-  <!-- 观点 -->
-  <div class="section-title">💬 一个值得想的观点</div>
+  <div class="section-title">📰 行业动态</div>
 
   <div class="card">
-    <h3>「做最好的产品，用多少 AI 不重要」</h3>
-    <p>Vercel CEO Guillermo Rauch：用很多 AI、用一点、或者完全不用——只要做到最好就行。AI 工具满天飞时，这句话反而是清醒的。</p>
-    <a href="https://x.com/rauchg/status/2060803480823193840" target="_blank">查看原推 →</a>
-  </div>
-
-  <!-- 深度 -->
-  <div class="section-title">🎧 深度：值得花 20 分钟听</div>
-
-  <div class="card">
-    <h3>Gemini 联合负责人：AI 记忆即将迎来范式转变</h3>
-    <p>Oriol Vinyals 的判断：未来 AI 记忆靠「文件系统式记忆」——agent 把学到的东西写进文件，跨 session 积累。他认为这会像推理模型出现时一样，带来一次范式转变。</p>
-    <div class="insight">我们现在用 Claude 跑的各种脚本，本质上也在探索这个方向</div>
-    <a href="https://www.youtube.com/watch?v=NQczevdpxq0" target="_blank">收听播客 →</a>
+    <div class="card-inner">
+      <div class="card-meta">
+        <span class="source-tag x">𝕏 @swyx</span>
+        <span class="source-tag">@latentspacepod</span>
+      </div>
+      <h3>AI 工程师内容竞争加速：WorkOS talk 正在挑战 Matt Pocock</h3>
+      <p>Swyx 提到一个 WorkOS 相关的技术 talk 正在 AI 工程师内容圈迅速走红，是近几周第一个在播放量上挑战 TypeScript 教学知名博主 Matt Pocock 的视频。团队正在对标题做 A/B 测试。这个信号说明 AI 工程师培训内容的竞争格局在加速演化，实操型内容比纯观点型更受欢迎。</p>
+      <div class="link-row">
+        <a href="https://x.com/swyx/status/2061658241877397917" target="_blank">查看原推 →</a>
+      </div>
+    </div>
   </div>
 
   <!-- 问卷 -->
@@ -258,38 +393,34 @@
     <p class="sub">4 道选择题，30 秒搞定</p>
     <div class="divider"></div>
 
-    <!-- Q1 -->
     <div class="question">
       <label class="q-title">1. 这期内容对你有帮助吗？</label>
       <div class="options" id="q1">
-        <button class="option-btn" onclick="select(this,'q1')">很有帮助</button>
-        <button class="option-btn" onclick="select(this,'q1')">一般</button>
-        <button class="option-btn" onclick="select(this,'q1')">帮助不大</button>
+        <button class="option-btn" onclick="selectOne(this,'q1')">很有帮助</button>
+        <button class="option-btn" onclick="selectOne(this,'q1')">一般</button>
+        <button class="option-btn" onclick="selectOne(this,'q1')">帮助不大</button>
       </div>
     </div>
 
-    <!-- Q2 -->
     <div class="question">
       <label class="q-title">2. 最感兴趣的内容类型？（可多选）</label>
       <div class="options" id="q2">
-        <button class="option-btn multi" onclick="toggleMulti(this)">工具实操</button>
-        <button class="option-btn multi" onclick="toggleMulti(this)">技术观点</button>
-        <button class="option-btn multi" onclick="toggleMulti(this)">行业动态</button>
-        <button class="option-btn multi" onclick="toggleMulti(this)">人才动向</button>
+        <button class="option-btn" onclick="toggleMulti(this)">工具实操</button>
+        <button class="option-btn" onclick="toggleMulti(this)">技术观点</button>
+        <button class="option-btn" onclick="toggleMulti(this)">行业动态</button>
+        <button class="option-btn" onclick="toggleMulti(this)">人才动向</button>
       </div>
     </div>
 
-    <!-- Q3 -->
     <div class="question">
       <label class="q-title">3. 希望调整推送频率吗？</label>
       <div class="options" id="q3">
-        <button class="option-btn" onclick="select(this,'q3')">继续每周</button>
-        <button class="option-btn" onclick="select(this,'q3')">希望更频繁</button>
-        <button class="option-btn" onclick="select(this,'q3')">频率太高了</button>
+        <button class="option-btn" onclick="selectOne(this,'q3')">继续每周</button>
+        <button class="option-btn" onclick="selectOne(this,'q3')">希望更频繁</button>
+        <button class="option-btn" onclick="selectOne(this,'q3')">频率太高了</button>
       </div>
     </div>
 
-    <!-- Q4 满意度 -->
     <div class="question">
       <label class="q-title">4. 整体满意度</label>
       <div class="stars" id="stars">
@@ -304,7 +435,6 @@
     <button class="submit-btn" onclick="submitForm()" id="submit-btn">提交反馈</button>
   </div>
 
-  <!-- 感谢页 -->
   <div class="thanks" id="thanks-page">
     <div class="emoji">🎉</div>
     <h2>感谢你的反馈！</h2>
@@ -314,68 +444,59 @@
 </div>
 
 <script>
-  // 配置
-  const ISSUE = "第0期";
-  // 替换为实际的写入接口地址（后续对接 wecom-cli webhook）
-  const WEBHOOK_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=7ca36b39-8a52-46c4-b37b-384db54b2061";
-
+  const ISSUE = "第1期";
+  const FEEDBACK_WEBHOOK = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=7c6acb8d-091d-42a4-8221-e4458cc68597";
   let answers = { q1: '', q2: [], q3: '', q4: 0 };
 
-  // 单选
-  function select(btn, group) {
-    document.querySelectorAll(`#${group} .option-btn`).forEach(b => b.classList.remove('selected'));
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('progress-bar').style.width = (scrolled * 100) + '%';
+  });
+
+  function selectOne(btn, group) {
+    document.querySelectorAll('#' + group + ' .option-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     answers[group] = btn.textContent;
   }
 
-  // 多选
   function toggleMulti(btn) {
     btn.classList.toggle('selected');
     answers.q2 = Array.from(document.querySelectorAll('#q2 .option-btn.selected')).map(b => b.textContent);
   }
 
-  // 星星评分
   function rateStar(n) {
     answers.q4 = n;
-    document.querySelectorAll('.star').forEach((s, i) => {
-      s.classList.toggle('active', i < n);
-    });
+    document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < n));
   }
 
-  // 提交
   async function submitForm() {
     if (!answers.q1 || !answers.q3 || answers.q4 === 0) {
       alert('请完成第 1、3、4 题后再提交 😊');
       return;
     }
-
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.textContent = '提交中...';
 
     const now = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-    const payload = {
-      msgtype: "text",
-      text: {
-        content: `📊 AI速递反馈收到！\n期号：${ISSUE}\n时间：${now}\n\nQ1 有帮助吗：${answers.q1}\nQ2 感兴趣类型：${answers.q2.join('、') || '未选'}\nQ3 推送频率：${answers.q3}\nQ4 满意度：${'⭐'.repeat(answers.q4)}（${answers.q4}/5）`
-      }
-    };
+    const msg = '📊 收到一条读者反馈\n期号：' + ISSUE + '\n时间：' + now +
+      '\n\n有帮助吗：' + answers.q1 +
+      '\n感兴趣类型：' + (answers.q2.join('、') || '未选') +
+      '\n推送频率：' + answers.q3 +
+      '\n满意度：' + '⭐'.repeat(answers.q4) + '（' + answers.q4 + '/5）';
 
     try {
-      await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
+      await fetch(FEEDBACK_WEBHOOK, {
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ msgtype: 'text', text: { content: msg } })
       });
-    } catch(e) {
-      // no-cors 模式下忽略网络错误，结果照样展示感谢页
-    }
+    } catch(e) {}
 
     document.getElementById('survey-form').style.display = 'none';
     document.getElementById('thanks-page').style.display = 'block';
   }
 </script>
-
 </body>
 </html>
